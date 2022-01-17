@@ -11,26 +11,10 @@ let sources = import ../../nix/sources.nix; in {
   # per-project flakes sourced with direnv and nix-shell, so this is
   # not a huge list.
   home.packages = [
-    pkgs.bat
-    pkgs.fd
     pkgs.firefox
-    pkgs.fzf
-    pkgs.git-crypt
-    pkgs.htop
-    pkgs.jq
-    pkgs.ripgrep
     pkgs.rofi
-    pkgs.tree
-    pkgs.watch
-    pkgs.zathura
-    pkgs._1password
-
-    pkgs.go
-    pkgs.gopls
-    pkgs.zig-master
-
-    pkgs.tlaplusToolbox
-    pkgs.tetex
+    pkgs.yubikey-manager
+    pkgs.gh
   ];
 
   #---------------------------------------------------------------------
@@ -42,25 +26,16 @@ let sources = import ../../nix/sources.nix; in {
     LC_CTYPE = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
     EDITOR = "nvim";
-    PAGER = "less -FirSwX";
-    MANPAGER = "sh -c 'col -bx | ${pkgs.bat}/bin/bat -l man -p'";
   };
 
   home.file.".gdbinit".source = ./gdbinit;
   home.file.".inputrc".source = ./inputrc;
+  home.file.".gitignore_global".source = ./gitignore_global;
+  home.file.".bundle/config".source = ./bundle;
 
   xdg.configFile."i3/config".text = builtins.readFile ./i3;
   xdg.configFile."rofi/config.rasi".text = builtins.readFile ./rofi;
   xdg.configFile."devtty/config".text = builtins.readFile ./devtty;
-
-  # tree-sitter parsers
-  xdg.configFile."nvim/parser/proto.so".source = "${pkgs.tree-sitter-proto}/parser";
-  xdg.configFile."nvim/queries/proto/folds.scm".source =
-    "${sources.tree-sitter-proto}/queries/folds.scm";
-  xdg.configFile."nvim/queries/proto/highlights.scm".source =
-    "${sources.tree-sitter-proto}/queries/highlights.scm";
-  xdg.configFile."nvim/queries/proto/textobjects.scm".source =
-    ./textobjects.scm;
 
   #---------------------------------------------------------------------
   # Programs
@@ -92,11 +67,6 @@ let sources = import ../../nix/sources.nix; in {
 
     config = {
       whitelist = {
-        prefix= [
-          "$HOME/code/go/src/github.com/hashicorp"
-          "$HOME/code/go/src/github.com/mitchellh"
-        ];
-
         exact = ["$HOME/.envrc"];
       };
     };
@@ -133,59 +103,31 @@ let sources = import ../../nix/sources.nix; in {
       name = n;
       src  = sources.${n};
     }) [
-      "fish-fzf"
-      "fish-foreign-env"
       "theme-bobthefish"
     ];
   };
 
   programs.git = {
     enable = true;
-    userName = "Mitchell Hashimoto";
-    userEmail = "mitchell.hashimoto@gmail.com";
+    userName = "Nate Berkopec";
+    userEmail = "nate.berkopec@gmail.com";
     signing = {
-      key = "523D5DC389D273BC";
+      key = "19616755F4328D71";
       signByDefault = true;
     };
     aliases = {
-      prettylog = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(r) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
-      root = "rev-parse --show-toplevel";
+      commend = "commit --amend";
     };
     extraConfig = {
       branch.autosetuprebase = "always";
       color.ui = true;
       core.askPass = ""; # needs to be empty to use terminal for ask pass
+      core.excludesfile ="~/.gitignore_global";
       credential.helper = "store"; # want to make this more secure
-      github.user = "mitchellh";
+      github.user = "nateberkopec";
       push.default = "tracking";
       init.defaultBranch = "main";
     };
-  };
-
-  programs.go = {
-    enable = true;
-    goPath = "code/go";
-    goPrivate = [ "github.com/mitchellh" "github.com/hashicorp" "rfc822.mx" ];
-  };
-
-  programs.tmux = {
-    enable = true;
-    terminal = "xterm-256color";
-    shortcut = "l";
-    secureSocket = false;
-
-    extraConfig = ''
-      set -ga terminal-overrides ",*256col*:Tc"
-
-      set -g @dracula-show-battery false
-      set -g @dracula-show-network false
-      set -g @dracula-show-weather false
-
-      bind -n C-k send-keys "clear"\; send-keys "Enter"
-
-      run-shell ${sources.tmux-pain-control}/pain_control.tmux
-      run-shell ${sources.tmux-dracula}/dracula.tmux
-    '';
   };
 
   programs.alacritty = {
@@ -229,37 +171,13 @@ let sources = import ../../nix/sources.nix; in {
 
   programs.neovim = {
     enable = true;
-    package = pkgs.neovim-nightly;
+    viAlias = true;
 
     plugins = with pkgs; [
-      customVim.vim-cue
-      customVim.vim-fish
-      customVim.vim-fugitive
-      customVim.vim-glsl
-      customVim.vim-misc
-      customVim.vim-pgsql
-      customVim.vim-tla
-      customVim.vim-zig
-      customVim.pigeon
-      customVim.AfterColors
-
-      customVim.vim-nord
-      customVim.nvim-comment
-      customVim.nvim-lspconfig
-      customVim.nvim-plenary # required for telescope
-      customVim.nvim-telescope
-      customVim.nvim-treesitter
-      customVim.nvim-treesitter-playground
-      customVim.nvim-treesitter-textobjects
-
+      vimPlugins.command-t
+      vimPlugins.nerdtree
       vimPlugins.vim-airline
-      vimPlugins.vim-airline-themes
-      vimPlugins.vim-eunuch
-      vimPlugins.vim-gitgutter
-
-      vimPlugins.vim-markdown
-      vimPlugins.vim-nix
-      vimPlugins.typescript-vim
+      vimPlugins.vim-endwise
     ];
 
     extraConfig = (import ./vim-config.nix) { inherit sources; };

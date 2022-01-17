@@ -39,6 +39,14 @@
   # Don't require password for sudo
   security.sudo.wheelNeedsPassword = false;
 
+  # No file limits
+  security.pam.loginLimits = [{
+    domain = "*";
+    type = "soft";
+    item = "nofile";
+    value = "unlimited";
+  }];
+
   # Virtualization settings
   virtualisation.docker.enable = true;
 
@@ -133,6 +141,9 @@
   services.openssh.enable = true;
   services.openssh.passwordAuthentication = true;
   services.openssh.permitRootLogin = "no";
+
+  # pcscd
+  services.pcscd.enable = true;
 
   # Disable the firewall since we're in a VM and we want to make it
   # easy to visit stuff in here. We only use NAT networking anyways.

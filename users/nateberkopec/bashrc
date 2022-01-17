@@ -1,3 +1,19 @@
+# Ruby aliases
+
+function berr {
+    GEM_HOST_OTP_CODE=$(ykman oath accounts code -s rubygems.org) bundle exec rake release
+}
+function gempush {
+    gem push --otp $(ykman oath accounts code -s rubygems.org)
+}
+
+alias be="bundle exec"
+
+alias nixrebuild="sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --show-trace --flake '.#vm-aarch64'"
+
+alias pbcopy="xclip -selection c"
+alias pbpaste="xclip -selection clipboard -o" 
+
 #-------------------------------------------------------------------------------
 # SSH Agent
 #-------------------------------------------------------------------------------
