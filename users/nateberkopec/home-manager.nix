@@ -169,18 +169,14 @@ let sources = import ../../nix/sources.nix; in {
     };
   };
 
-  programs.neovim = {
+  programs.vscode = {
     enable = true;
-    viAlias = true;
-
-    plugins = with pkgs; [
-      vimPlugins.command-t
-      vimPlugins.nerdtree
-      vimPlugins.vim-airline
-      vimPlugins.vim-endwise
+    package = pkgs.vscode;
+    extensions = with pkgs.vscode-extensions; [
+      bbenoist.nix
+      dracula-theme.theme-dracula
+      vscodevim.vim
     ];
-
-    extraConfig = (import ./vim-config.nix) { inherit sources; };
   };
 
   services.gpg-agent = {
