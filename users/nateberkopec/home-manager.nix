@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let sources = import ../../nix/sources.nix; in {
+  home.stateVersion = "18.09";
+  
   xdg.enable = true;
 
   #---------------------------------------------------------------------
