@@ -61,7 +61,7 @@ mkdir -p $HOME/.vim/{backup,swap,undo}
 # Do not show any greeting
 set --universal --erase fish_greeting
 function fish_greeting; end
-funcsave fish_greeting
+funcsave -q fish_greeting
 
 # bobthefish theme
 set -g theme_color_scheme dracula
