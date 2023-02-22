@@ -27,7 +27,7 @@ let sources = import ../../nix/sources.nix; in {
     LANG = "en_US.UTF-8";
     LC_CTYPE = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
-    EDITOR = "nvim";
+    EDITOR = "code";
   };
 
   home.file.".gdbinit".source = ./gdbinit;
