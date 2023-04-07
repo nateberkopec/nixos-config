@@ -124,6 +124,7 @@ let sources = import ../../nix/sources.nix; in {
       branch.autosetuprebase = "always";
       color.ui = true;
       core.askPass = ""; # needs to be empty to use terminal for ask pass
+      core.editor = "code -w"
       core.excludesfile ="~/.gitignore_global";
       credential.helper = "store"; # want to make this more secure
       github.user = "nateberkopec";
